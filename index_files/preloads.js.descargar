@@ -1,0 +1,72 @@
+
+    (function() {
+      var baseURL = "https://cdn.shopify.com/shopifycloud/checkout-web/assets/";
+      var scripts = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/runtime.latest.es.63d3161710f26a8e4534.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/871.latest.es.1ccec4b555458a8923c2.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/1328.latest.es.c47910bb29b00f5adef6.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/4085.latest.es.038fd3ba3e4f54208a8b.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/app.latest.es.72046d7a210b11dbb95f.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2542.latest.es.e8b98a9ed829efc0c730.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/400.latest.es.07596a4ca44205a6b702.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2080.latest.es.5117e670600bcaf49bb5.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5767.latest.es.e7b7597a1e2d855650cb.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/4387.latest.es.8cb14cfbd4518cb3243e.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5718.latest.es.46c115a3ead74a9703fa.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2714.latest.es.c234d95ec7018c7c68b3.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/668.latest.es.7aae4c473a9995741f75.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/OnePage.latest.es.6a239fb1e81974d7c5b1.js"];
+      var styles = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/871.latest.es.de22b83672b7fe512099.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/app.latest.es.eaaefad77ff32465e9ee.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/6268.latest.es.b29aa02f3a9cc3ddd45f.css"];
+      var fontPreconnectUrls = [];
+      var fontPrefetchUrls = [];
+      var imgPrefetchUrls = ["https://cdn.shopify.com/s/files/1/2656/3744/files/Recurso_6_2x_9b8fde30-b684-4eff-a135-253d8e106299_x320.png?v=1616853012","https://cdn.shopify.com/s/files/1/2656/3744/files/Recurso_5_2x_244e5b1e-2516-4d8b-b82c-f5c39d061f92_2000x.png?v=1616852814"];
+
+      function preconnect(url, callback) {
+        var link = document.createElement('link');
+        link.rel = 'dns-prefetch preconnect';
+        link.href = url;
+        link.crossOrigin = '';
+        link.onload = link.onerror = callback;
+        document.head.appendChild(link);
+      }
+
+      function preconnectAssets() {
+        var resources = [baseURL].concat(fontPreconnectUrls);
+        var index = 0;
+        (function next() {
+          var res = resources[index++];
+          if (res) preconnect(res, next);
+        })();
+      }
+
+      function prefetch(url, as, callback) {
+        var link = document.createElement('link');
+        if (link.relList.supports('prefetch')) {
+          link.rel = 'prefetch';
+          link.fetchPriority = 'low';
+          link.as = as;
+          if (as === 'font') link.type = 'font/woff2';
+          link.href = url;
+          link.crossOrigin = '';
+          link.onload = link.onerror = callback;
+          document.head.appendChild(link);
+        } else {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          xhr.onloadend = callback;
+          xhr.send();
+        }
+      }
+
+      function prefetchAssets() {
+        var resources = [].concat(
+          scripts.map(function(url) { return [url, 'script']; }),
+          styles.map(function(url) { return [url, 'style']; }),
+          fontPrefetchUrls.map(function(url) { return [url, 'font']; }),
+          imgPrefetchUrls.map(function(url) { return [url, 'image']; })
+        );
+        var index = 0;
+        (function next() {
+          var res = resources[index++];
+          if (res) prefetch(res[0], res[1], next);
+        })();
+      }
+
+      function onLoaded() {
+        preconnectAssets();
+        prefetchAssets();
+      }
+
+      if (document.readyState === 'complete') {
+        onLoaded();
+      } else {
+        addEventListener('load', onLoaded);
+      }
+    })();
+  
